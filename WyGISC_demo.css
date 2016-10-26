@@ -1,0 +1,22 @@
+html,body {
+  width:100%; height:100%; margin:0; padding:0; border:0;
+}
+
+#map {
+  width:100%; height:100%; z-index:5;
+}
+
+@keyframes show {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
+@keyframes hide {
+  0% {opacity:1;}
+  100% {opacity:0;}
+}
+
+#guide {
+  position:absolute;
+  width:400px; height:230px; z-index:10;
+  background:linear-gradient(#FFE,#EFF);
+}
