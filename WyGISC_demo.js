@@ -20,7 +20,22 @@ require(
 
     demo = (function() {
 
+      //  Canvas
+
+      var canvas = dom.byId('canvas');
+      var context = canvas.getContext('2d');
+      function resizeContext() {
+        context.canvas.width = canvas.offsetWidth;
+        context.canvas.height = canvas.offsetHeight;
+      }
+      resizeContext();
+      on(window,'resize',resizeContext);
+
+      //  Guide
+
       var guide = dom.byId('guide');
+
+      //  Macros
 
       function show(e,instantaneous) {
         if (instantaneous) e.style.display = 'block';
@@ -39,7 +54,10 @@ require(
         }
       }
       
-      var steps = [
+      //  Storyboard
+
+      var storyIndex = 0;
+      var storyboard = [
         
 // 0 --------------------------------------
       function(){
@@ -49,42 +67,60 @@ require(
         var basemapIndex = 0;
         var basemapList = ['satellite','topo','national-geographic','dark-gray','oceans','osm','gray'];
         var azimuth = 29;
-        var azimuthSweep = -0.1
+        var azimuthSweep = -0.08
         var zenith = 40;
         var zenithSweep = -1;
-        var flyoverDelay = 100; // in iterations
         var flyoverClear = false;
+
+        //  Ready map
+        view.goTo({center:[INIT_X,INIT_Y], scale:S, tilt:zenith, heading:azimuth},{animate:true});
         function flyover(x,y) {
-          
           iteration += 1;
           view.goTo({center:[x,y], scale:S, tilt:zenith, heading:azimuth},{animate:true});
-          
-          if (!flyoverClear && iteration >= flyoverDelay) {
-            flyoverClear = true;
-            
-            console.log("T");
-          }
-          else if (flyoverClear) {
-
-            azimuth += azimuthSweep;
-            if (azimuth > 90 && azimuth < 180) azimuthSweep = -azimuthSweep;
-
-            zenith += (41-zenith)*zenithSweep/200;
-            if (zenith > 40 || zenith < 0) zenithSweep = -zenithSweep;
-
-            S += Math.sqrt(2e9-S)/4e2;
-            x += Math.sqrt(S)/1e6;
-            if (x > 180) x -= 360;
-
-            if (iteration === 300) {
-              iteration = 0;
-              basemapIndex += 1;
-              if (basemapIndex === basemapList.length) basemapIndex = 0;
-              view.map.basemap = basemapList[basemapIndex];
-            }
+          azimuth += azimuthSweep;
+          if (azimuth > 90 && azimuth < 180) azimuthSweep = -azimuthSweep;
+          zenith += (41-zenith)*zenithSweep/200;
+          if (zenith > 40 || zenith < 0) zenithSweep = -zenithSweep;
+          S += S/200;
+          x += Math.sqrt(S)/8e5;
+          if (x > 180) x -= 360;
+          if (iteration === 300) {
+            iteration = 0;
+            basemapIndex += 1;
+            if (basemapIndex === basemapList.length) basemapIndex = 0;
+            view.map.basemap = basemapList[basemapIndex];
           }
           if (!endFlyover) setTimeout(function(){flyover(x,y);},30);
         }
+
+        context.fillStyle = '#000';
+        context.fillRect(0,0,context.canvas.width,context.canvas.height);
+        context.font = '48px serif';
+        var sfI = 0;
+        var sfA = 0;
+        var sfState = 1;
+        function splashFade() {console.log(sfState);
+          sfI += 1;
+          if (sfI > 500) {sfA=0;sfState+=1;sfI=0;if (sfState===2) sfI=200;}
+          switch(sfState) {
+            case 1:
+              sfA += 0.01;
+              context.fillRect(0,0,context.canvas.width,context.canvas.height);
+              context.strokeStyle = 'rgba(255,255,255,' + sfA + ')';
+              context.strokeText('A Demonstration of Modern GIS',200,200);
+              window.requestAnimationFrame(splashFade);
+              break;
+            case 2:
+              sfA += 0.01;
+              context.clearRect(0,0,context.canvas.width,context.canvas.height);
+              context.strokeStyle = 'rgba(255,255,255,' + sfA + ')';
+              context.strokeText('GIS',200,200);
+              window.requestAnimationFrame(splashFade);
+              break;
+            default: return;
+          }
+        }
+        window.requestAnimationFrame(splashFade);
         flyover(INIT_X,INIT_Y);
       },
         
@@ -94,8 +130,7 @@ require(
 
       function start() {
         hide(guide,true);
-        steps[0]();
-        //rotater([-107.4,43]);
+        storyboard[storyIndex++]();
       }
       function next() {
 
