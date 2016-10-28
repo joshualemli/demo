@@ -47,9 +47,8 @@ require(
     var INIT_COORD = webMercUtils.xyToLngLat(INIT_X_wm,INIT_Y_wm);
     _CL(INIT_COORD);
 
-
     //  Map
-    
+
     view = new SceneView({
       map: new Map({
         basemap: 'satellite',
@@ -158,14 +157,45 @@ require(
       
       //  Storyboard
 
-      var storyIndex = 0;
+      var section = {
+        index:0,
+        control:'stop',
+        timer:0,
+        name:null
+      };
 
-      _Intro = function(){}
-      _WhatIsGIS = function(){}
-      _UsingGIS = function(){}
-      _Analytics = function(){}
-      _Code = function(){}
-      _Credits = function(){}
+      var storyboard = {
+        _Intro: [
+          function() {},
+          function() {}
+        ],
+        _WhatIsGIS: [
+        ],
+        _UsingGIS: [
+        ],
+        _Analytics: [
+        ],
+        _Code: [
+        ],
+        _Credits: [
+        ]
+      };
+      
+      function playSection() {
+        storyboard[sectionName][sectionIndex]();
+        switch(sectionControl) {
+          case 'play':
+            window.requestAnimationFrame(playSection);
+            break;
+          case 'stop': return
+            break;
+          case 'next':
+            sectionIndex += 1;
+            window.requestAnimationFrame(playSection);
+            break;
+          default: return;
+        }
+      }
       
       //  Public Functions
 
@@ -179,8 +209,8 @@ require(
         if (indexNumber === undefined) {}
         else {
           storyIndex += 1;
-          var play = menu.byIndex(storyIndex);
-          
+          var item = menu.byIndex(storyIndex);
+          playSection(item.func);
         }
       }
       function goTo(){}
