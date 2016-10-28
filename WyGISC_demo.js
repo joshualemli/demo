@@ -31,6 +31,14 @@ require(
   ],
   function( Camera, Map, SceneView, webMercUtils, on, dom, domConstruct ) {
 
+    //  Storyboard functions
+    var _Intro,
+        _WhatIsGIS,
+        _UsingGIS,
+        _Analytics,
+        _Code,
+        _Credits;
+
     function _CL(a) {console.log(a);}
 
     var HOME_X = -107.4, HOME_Y = 43, INIT_X_wm = -6485314.592377769, INIT_Y_wm = -401389.6840867117;
@@ -39,7 +47,7 @@ require(
     var INIT_COORD = webMercUtils.xyToLngLat(INIT_X_wm,INIT_Y_wm);
     _CL(INIT_COORD);
 
-    
+
     //  Map
     
     view = new SceneView({
@@ -83,12 +91,13 @@ require(
       resizeContext();
       on(window,'resize',resizeContext);
 
-      //  Guide
+      //  Nav
 
+      var esriUI; // set in init
       var guide = dom.byId('guide');
       
       //  Menu
-      
+
       var menu = (function(){
         var index = [];
         function addItems(items) {
@@ -96,29 +105,36 @@ require(
         }
         addItems([
           { name:'Intro',
-            func:'_Intro'
+            func:_Intro
           },
           { name:'What is GIS?',
-            func:'_WhatIsGIS'
+            func:_WhatIsGIS
           },
           { name:'Using GIS',
-            func:'_UsingGIS'
+            func:_UsingGIS
           },
           { name:'"Analytics"',
-            func:'_Analytics',
+            func:_Analytics
           },
           { name:'Code',
-            func:'_Code'
+            func:_Code
           },
           { name:'Credits',
-            func:'_Credits'
+            func:_Credits
           },
         ]);
         index.forEach(function(item){
           domConstruct.create('span', {
             innerHTML: item.name,
+            class:'guide_item'
           }, guide );
         });
+        function byIndex(i) {return index[i];}
+        function byName(n) {index.forEach(function(item){if (item.name===n) return n;});}
+        return {
+          goByName:byName,
+          goByIndex:byIndex
+        };
       })();
 
       //  Macros
@@ -143,28 +159,36 @@ require(
       //  Storyboard
 
       var storyIndex = 0;
-      var storyboard = [
-        
-// 0 --------------------------------------
-      function(){
-      },
-        
-// 1 ----------------------------------------
-        function(){},
-      ];
+
+      _Intro = function(){}
+      _WhatIsGIS = function(){}
+      _UsingGIS = function(){}
+      _Analytics = function(){}
+      _Code = function(){}
+      _Credits = function(){}
+      
+      //  Public Functions
 
       function start() {
+        esriUI = document.getElementsByClassName('esri-ui-corner')[0];
         show(guide);
+        hide(esriUI,true);
         hide(canvas,true);
-        storyboard[storyIndex++]();
       }
-      function next() {
-
+      function next(indexNumber) {
+        if (indexNumber === undefined) {}
+        else {
+          storyIndex += 1;
+          var play = menu.byIndex(storyIndex);
+          
+        }
       }
+      function goTo(){}
 
       return {
         start:start,
-        next:next
+        next:next,
+        goTo:goTo
       };
     })(); // end `demo`
 
