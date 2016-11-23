@@ -1,0 +1,48 @@
+html,body {
+  width:100%; height:100%;
+  margin:0; padding:0; border:0;
+}
+
+#menu {
+  z-index:100;
+  width:100%; height:24px;
+  position:absolute; top:0; left:0;
+}
+
+#navigator {
+  z-index:30;
+  position:absolute; top:24px; left:0;
+}
+
+#ui {
+  z-index:30;
+  position:absolute; top:24px; left:0;
+}
+
+#canvas {
+  z-index:20;
+  position:absolute; top:0; left:0;
+  width:100%; height:100%;
+}
+
+#textBox {
+  z-index:19;
+  position:absolute;
+  padding:12px;
+  background-color:rgba(0,0,0,0.5);
+  border:1px solid 777;
+  border-radius:12px;
+  color:#FFF;
+  font-size:32px;
+  transition:2.5s;
+}
+.transparent {
+  opacity:0;
+}
+
+#map {
+  z-index:10;
+  width:100%; height:100%;
+}
+
+.hide {display:none;}

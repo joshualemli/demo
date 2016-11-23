@@ -70,10 +70,7 @@ require(
         var azimuthSweep = -0.08
         var zenith = 40;
         var zenithSweep = -1;
-        var flyoverClear = false;
 
-        //  Ready map
-        view.goTo({center:[INIT_X,INIT_Y], scale:S, tilt:zenith, heading:azimuth},{animate:true});
         function flyover(x,y) {
           iteration += 1;
           view.goTo({center:[x,y], scale:S, tilt:zenith, heading:azimuth},{animate:true});
@@ -96,32 +93,45 @@ require(
         context.fillStyle = '#000';
         context.fillRect(0,0,context.canvas.width,context.canvas.height);
         context.font = '48px serif';
-        var sfI = 0;
-        var sfA = 0;
-        var sfState = 1;
-        function splashFade() {console.log(sfState);
-          sfI += 1;
-          if (sfI > 500) {sfA=0;sfState+=1;sfI=0;if (sfState===2) sfI=200;}
-          switch(sfState) {
-            case 1:
-              sfA += 0.01;
-              context.fillRect(0,0,context.canvas.width,context.canvas.height);
-              context.strokeStyle = 'rgba(255,255,255,' + sfA + ')';
-              context.strokeText('A Demonstration of Modern GIS',200,200);
-              window.requestAnimationFrame(splashFade);
-              break;
-            case 2:
-              sfA += 0.01;
-              context.clearRect(0,0,context.canvas.width,context.canvas.height);
-              context.strokeStyle = 'rgba(255,255,255,' + sfA + ')';
-              context.strokeText('GIS',200,200);
-              window.requestAnimationFrame(splashFade);
-              break;
-            default: return;
+
+        var splashTimer = 0;
+        var alpha = 0;
+        var col = 0;
+        function splash1() {
+          splashTimer += 1;
+          if (splashTimer < 300) alpha += (alpha<1?0.01:0);
+          else if (splashTimer > 400) alpha += (alpha>0?-0.01:0);
+          context.fillRect(0,0,context.canvas.width,context.canvas.height);
+          context.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
+          context.strokeText('A Demonstration of Modern GIS',200,200);
+          if (splashTimer < 600) window.requestAnimationFrame(splash1);
+          else {
+            alpha = 1;
+            view.goTo({center:[INIT_X,INIT_Y], scale:S, tilt:zenith, heading:azimuth},{animate:true});
+            window.requestAnimationFrame(splash2);
           }
         }
-        window.requestAnimationFrame(splashFade);
-        flyover(INIT_X,INIT_Y);
+        function splash2() {
+          splashTimer += 1;
+          if (Math.random()>0.95) console.log(col,alpha);
+          var color = Math.round(col);
+          context.fillStyle = 'rgba('+[color,color,color,parseFloat(alpha).toFixed(2)].join(',')+')';
+          context.clearRect(0,0,context.canvas.width,context.canvas.height);
+          context.fillRect(0,0,context.canvas.width,context.canvas.height);
+          if (col < 255) col += 1;
+          if (alpha > 0) alpha -= 0.002;
+          if (col >255) col=255; if(alpha<0) alpha=0;
+          if (splashTimer === 850) {flyover(INIT_X,INIT_Y);console.log("FLYOVER");}
+          if (splashTimer < 1200) {window.requestAnimationFrame(splash2);}
+          else {
+            console.log("endSplash2");
+            context.fillStyle = 'rgba(0,0,0,0)';
+            context.clearRect(0,0,context.canvas.width,context.canvas.height);
+          }
+        }
+
+
+        window.requestAnimationFrame(splash1);
       },
         
 // 1 ----------------------------------------

@@ -1,20 +1,29 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!-- Joshua A. Lemli, 2016 -->
 <html>
   <head>
-    <!--  CSS  -->
-    <link rel="stylesheet" href="https://js.arcgis.com/4.1/esri/css/main.css">  <!-- Required by ESRI API -->
-    <link rel="stylesheet" href="https://js.arcgis.com/4.1/dijit/themes/claro/claro.css">  <!-- Required by Dojo -->
-    <link href='WyGISC_demo.css' type='text/css' rel='stylesheet'>
+  
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 
-    <!--  Core  -->
-    <script>"use strict";var dojoConfig;(function(){dojoConfig={async:true,parseOnLoad:false,};})();</script>  <!-- Configure App -->
-    <script src="https://js.arcgis.com/4.1/"></script>  <!-- Load ArcGIS JavaScript API & Dojo -->
-    <script src="WyGISC_demo.js"></script>  <!-- Deploy -->
+    <title>WyGISC Demo v0.5</title>
+
+    <!--  CSS  -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.1/esri/css/main.css"><!-- Required by ESRI API -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.1/dijit/themes/claro/claro.css"><!-- Required by Dojo -->
+    <link href='demo.css' type='text/css' rel='stylesheet'>
+
+    <!--  JavaScript  -->
+    <script>"use strict";var dojoConfig;(function(){dojoConfig={async:true,parseOnLoad:false,};})();</script><!-- Configure App -->
+    <script src="https://js.arcgis.com/4.1/"></script><!-- Load ArcGIS JavaScript API & Dojo -->
+    <script src="demo.js"></script><!-- Deploy -->
+
   </head>
   <body class='claro'>
-    <div id='guide'></div>
-    <div id='controls'></div>
-    <div id='map'></div>
+    <div id='menu'></div>
+    <div id='navigator'></div>
+    <div id='ui'></div>
     <canvas id='canvas'></canvas>
+    <div id='textBox' class='transparent'></div>
+    <div id='map'></div>
   </body>
 </html>
